@@ -28,7 +28,7 @@ class WeatherDescriptionProcessor extends DirectionScoreProcessor implements Dir
         }
 
         return !$this->next
-            ? $score
+            ? $this->yieldScore($score)
             : $this->next->process($weather, $score)
         ;
     }

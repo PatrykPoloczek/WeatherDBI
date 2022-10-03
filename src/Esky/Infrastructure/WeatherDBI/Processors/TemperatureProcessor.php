@@ -25,7 +25,7 @@ class TemperatureProcessor extends DirectionScoreProcessor implements DirectionS
         }
 
         return !$this->next
-            ? $score
+            ? $this->yieldScore($score)
             : $this->next->process($weather, $score)
         ;
     }

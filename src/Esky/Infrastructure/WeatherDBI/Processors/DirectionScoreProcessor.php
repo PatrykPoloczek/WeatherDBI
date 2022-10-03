@@ -26,12 +26,17 @@ abstract class DirectionScoreProcessor implements DirectionScoreProcessorInterfa
     public function process(Weather $weather, ?int $score = 0): int
     {
         if (!$this->next) {
-            return self::MAX_SCORE <= $score
-                ? self::MAX_SCORE
-                : $score
-            ;
+            return $this->yieldScore($score);
         }
 
         return $this->next->process($weather);
+    }
+
+    protected function yieldScore(?int $score = 0): int
+    {
+        return self::MAX_SCORE <= $score
+            ? self::MAX_SCORE
+            : $score
+        ;
     }
 }

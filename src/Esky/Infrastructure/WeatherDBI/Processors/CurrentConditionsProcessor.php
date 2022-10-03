@@ -35,10 +35,10 @@ class CurrentConditionsProcessor extends DirectionScoreProcessor implements Dire
                 break;
         }
 
-        $score += $bonus;
+        $score += (int) $bonus;
 
         return !$this->next
-            ? $score
+            ? $this->yieldScore($score)
             : $this->next->process($weather, $score)
         ;
     }
