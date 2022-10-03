@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Esky Tasks" basedir="..">
+    <typedef name="parameter" classname="Esky\PhingTasks\Parameter" />
+    <taskdef name="dumpparams" classname="Esky\PhingTasks\DumpParameters" />
+</project>

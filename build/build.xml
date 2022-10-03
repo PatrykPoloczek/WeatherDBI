@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Esky Build DevSkiller" default="build" basedir=".">
+
+    <property name="dir:root" value="${project.basedir}"/>
+    <property name="dir:bin" value="${dir:root}/bin/"/>
+    <property name="dir:var" value="${dir:root}/var"/>
+    <property name="dir:test-artifacts" value="${dir:var}/tests"/>
+
+    <target name="build">
+        <phingcall target="php:version"/>
+        <phingcall target="composer:install"/>
+        <phingcall target="validation:behat"/>
+    </target>
+
+    <target name="php:version">
+        <exec passthru="true"
+              checkreturn="false"
+              command="php -v"/>
+    </target>
+
+    <target name="composer:install" description="Download dependencies - dev environment">
+        <exec executable="composer" passthru="true" dir="${dir:root}" checkreturn="true" level="info">
+            <arg line="install"/>
+            <arg line="--ansi"/>
+            <arg line="--prefer-dist"/>
+            <arg line="--optimize-autoloader"/>
+            <arg line="--no-interaction"/>
+            <arg line="--no-progress"/>
+            <arg line="--profile"/>
+        </exec>
+        <echo msg="Success: Composer dependencies ready."/>
+    </target>
+
+    <target name="validation:behat" description="Behat BDD functional tests">
+        <mkdir dir="${dir:test-artifacts}/behat.junit/" description="Create test cache directory" />
+
+        <exec dir="${dir:root}"
+              executable="${dir:bin}behat"
+              passthru="true"
+              checkreturn="true"
+              level="info">
+            <arg line="-v" />
+            <arg line="--format junit" />
+            <arg line="--out ${dir:test-artifacts}/behat.junit/" />
+            <arg line="--format pretty" />
+            <arg line="--out php://stdout" />
+        </exec>
+        <echo msg="Done: validation:behat" />
+    </target>
+
+</project>

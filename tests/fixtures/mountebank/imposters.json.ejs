@@ -1,0 +1,30 @@
+{
+    "imposters": [
+        {
+            "protocol": "http",
+            "port": 8080,
+            "name": "stub",
+            "stubs": [
+                <% include stubs/weather.json.ejs %>,
+                {
+                    "predicates": [
+                        {
+                            "equals": {
+                                "path": "/_test",
+                                "method": "GET"
+                            }
+                        }
+                    ],
+                    "responses": [
+                        {
+                            "is": {
+                                "statusCode": 200,
+                                "body": "ok"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

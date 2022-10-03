@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Esky Validations" default="validation:full" basedir="..">
+
+    <property name="dir:root" value="${project.basedir}"/>
+    <property name="dir:var" value="${dir:root}/var"/>
+    <property name="dir:test-artifacts" value="${dir:var}/tests"/>
+    <property name="dir:bin" value="${dir:root}/bin/"/>
+    <property name="dir:src" value="${dir:root}/src/"/>
+    <property name="threads" value="0" override="true"/>
+
+    <fileset dir="${dir:src}" id="source_files">
+        <include name="**/*.php"/>
+        <exclude name="**/Tests/**"/>
+        <exclude name="**/spec/**"/>
+        <exclude name="**/features/**"/>
+    </fileset>
+
+    <target name="validation:full" description="Run all validations parallel" depends="
+        detect-cpus,
+        remove:test-artifacts">
+        <phingcall target="validation:phpspec"/>
+        <phingcall target="validation:phpunit"/>
+        <phingcall target="validation:behat"/>
+        <echo msg="Success: Validation done."/>
+    </target>
+
+    <!-- ################################################################################# -->
+    <!-- VALIDATION SUB TARGETS -->
+    <!-- ################################################################################# -->
+
+    <target name="validation:phpspec" description="PhpSpec BDD unit tests">
+        <exec dir="${dir:root}"
+              executable="${dir:bin}phpspec"
+              output="${dir:test-artifacts}/phpspec.junit.xml"
+              error="${dir:test-artifacts}/phpspec.err"
+              checkreturn="true"
+              level="info">
+            <arg line="run" />
+            <arg line="--no-code-generation" />
+            <arg line="--format junit" />
+        </exec>
+        <echo msg="Done: validation:phpspec"/>
+    </target>
+
+    <target name="validation:phpunit" description="PHPUnit tests">
+        <exec dir="${dir:root}"
+              executable="${dir:bin}phpunit"
+              output="${dir:test-artifacts}/phpunit.log"
+              error="${dir:test-artifacts}/phpunit.err"
+              checkreturn="true"
+              level="info">
+            <arg value="-v"/>
+            <arg value="--colors=always"/>
+            <arg value="--log-junit"/>
+            <arg value="${dir:test-artifacts}/phpunit.junit.xml"/>
+        </exec>
+        <echo msg="Done: validation:phpunit"/>
+    </target>
+
+    <target name="validation:behat" description="Behat BDD functional tests">
+        <mkdir dir="${dir:test-artifacts}/behat.junit/" description="Create test cache directory" />
+
+        <exec dir="${dir:root}"
+              executable="${dir:bin}behat"
+              output="${dir:test-artifacts}/behat.log"
+              error="${dir:test-artifacts}/behat.err"
+              checkreturn="true"
+              level="info">
+            <arg line="-v" />
+            <arg line="--format junit" />
+            <arg line="--out ${dir:test-artifacts}/behat.junit/" />
+            <arg line="--format pretty" />
+            <arg line="--out php://stdout" />
+        </exec>
+
+        <exec dir="${dir:root}"
+              executable="${dir:root}/bin/phpjunitmerge"
+              output="${dir:test-artifacts}/behat.junitmerge.log"
+              error="${dir:test-artifacts}/behat.junitmerge.err"
+              checkreturn="true"
+              level="info">
+            <arg line="${dir:test-artifacts}/behat.junit/" />
+            <arg line="${dir:test-artifacts}/behat.junit.xml" />
+        </exec>
+        <echo msg="Done: validation:behat" />
+    </target>
+
+    <target name="validation:lint:target" hidden="true">
+        <phplint haltonfailure="true"
+                 level="info"
+                 deprecatedAsError="true">
+            <fileset refid="source_files"/>
+        </phplint>
+    </target>
+
+    <!-- ################################################################################# -->
+    <!-- VALIDATION HELPER TARGETS -->
+    <!-- ################################################################################# -->
+
+    <target name="remove:test-artifacts" description="Clean tests artifacts directory" hidden="true">
+        <delete includeemptydirs="true" failonerror="true" quiet="true">
+            <fileset dir="${dir:test-artifacts}">
+                <exclude name=".gitkeep"/>
+            </fileset>
+        </delete>
+        <mkdir dir="${dir:test-artifacts}" description="Create test cache directory" />
+        <echo msg="Success: Directory ${dir:test-artifacts} is clean."/>
+    </target>
+
+    <target name="detect-cpus" hidden="true">
+        <exec executable="nproc"
+              outputProperty="threads"
+              checkreturn="false"
+              level="info">
+        </exec>
+        <echo msg="Detected ${threads} CPU(s)"/>
+    </target>
+</project>

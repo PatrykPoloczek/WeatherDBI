@@ -1,0 +1,129 @@
+{
+  "region": "Cairo, Egypt",
+  "currentConditions": {
+    "dayhour": "Tuesday 10:00 AM",
+    "temp": {
+      "c": 25,
+      "f": 77
+    },
+    "precip": "0%",
+    "humidity": "36%",
+    "wind": {
+      "km": 8,
+      "mile": 5
+    },
+    "iconURL": "https://ssl.gstatic.com/onebox/weather/64/partly_cloudy.png",
+    "comment": "Mostly sunny"
+  },
+  "next_days": [
+    {
+      "day": "Tuesday",
+      "comment": "Sunny",
+      "max_temp": {
+        "c": 28,
+        "f": 82
+      },
+      "min_temp": {
+        "c": 15,
+        "f": 59
+      },
+      "iconURL": "https://ssl.gstatic.com/onebox/weather/48/sunny.png"
+    },
+    {
+      "day": "Wednesday",
+      "comment": "Sunny",
+      "max_temp": {
+        "c": 27,
+        "f": 80
+      },
+      "min_temp": {
+        "c": 14,
+        "f": 58
+      },
+      "iconURL": "https://ssl.gstatic.com/onebox/weather/48/sunny.png"
+    },
+    {
+      "day": "Thursday",
+      "comment": "Mostly sunny",
+      "max_temp": {
+        "c": 28,
+        "f": 82
+      },
+      "min_temp": {
+        "c": 15,
+        "f": 59
+      },
+      "iconURL": "https://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png"
+    },
+    {
+      "day": "Friday",
+      "comment": "Partly cloudy",
+      "max_temp": {
+        "c": 29,
+        "f": 85
+      },
+      "min_temp": {
+        "c": 15,
+        "f": 59
+      },
+      "iconURL": "https://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png"
+    },
+    {
+      "day": "Saturday",
+      "comment": "Mostly sunny",
+      "max_temp": {
+        "c": 32,
+        "f": 90
+      },
+      "min_temp": {
+        "c": 16,
+        "f": 61
+      },
+      "iconURL": "https://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png"
+    },
+    {
+      "day": "Sunday",
+      "comment": "Sunny",
+      "max_temp": {
+        "c": 33,
+        "f": 91
+      },
+      "min_temp": {
+        "c": 16,
+        "f": 61
+      },
+      "iconURL": "https://ssl.gstatic.com/onebox/weather/48/sunny.png"
+    },
+    {
+      "day": "Monday",
+      "comment": "Sunny",
+      "max_temp": {
+        "c": 32,
+        "f": 89
+      },
+      "min_temp": {
+        "c": 17,
+        "f": 62
+      },
+      "iconURL": "https://ssl.gstatic.com/onebox/weather/48/sunny.png"
+    },
+    {
+      "day": "Tuesday",
+      "comment": "Partly cloudy",
+      "max_temp": {
+        "c": 32,
+        "f": 90
+      },
+      "min_temp": {
+        "c": 18,
+        "f": 64
+      },
+      "iconURL": "https://ssl.gstatic.com/onebox/weather/48/partly_cloudy.png"
+    }
+  ],
+  "contact_author": {
+    "email": "communication.with.users@gmail.com",
+    "auth_note": "Mail me for feature requests, improvement, bug, help, ect... Please tell me if you want me to provide any other free easy-to-use API services"
+  },
+  "data_source": "https://www.google.com/search?lr=lang_en&q=weather+in+cairo"
+}

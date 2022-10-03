@@ -1,0 +1,4 @@
+parameters:
+    app_type: webservice
+    app_name: direction
+    app_version: b0

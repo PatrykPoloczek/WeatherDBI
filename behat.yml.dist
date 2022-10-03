@@ -1,0 +1,48 @@
+imports:
+    - config/parameters.yml
+
+default:
+    autoload:
+        '': src/
+
+    extensions:
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: features/bootstrap/bootstrap.php
+                class: App\Kernel
+            context:
+                path_suffix: Tests
+                class_suffix: Tests\Features\Context\FeatureContext
+
+        Behat\MinkExtension:
+            base_url:  'https://direction.eskyservices.pl.local'
+            sessions:
+                default:
+                    symfony2: ~
+                goutte:
+                    goutte:
+                        guzzle_parameters:
+                            verify: false
+
+        SensioLabs\Behat\PageObjectExtension:
+            namespaces:
+                page: Features\Application\Page
+                element: Features\Application\Element
+
+    suites:
+        esky_documentation:
+            paths: [ '%paths.base%/features/application/documentation' ]
+            contexts:
+                - Features\Application\ApiContext
+                - Features\Application\DocumentationContext
+        esky_api:
+            paths: [ '%paths.base%/features/application/api' ]
+            contexts:
+                - Features\Application\ApiContext
+                - Features\Application\DatabaseContext
+        esky_command:
+            paths: [ '%paths.base%/features/application/command' ]
+            contexts:
+                - Features\Application\CommandContext
+                - Features\Application\DatabaseContext
+

@@ -1,0 +1,13 @@
+esky_api_controllers:
+    resource: ../../src/Esky/Application/Controller/Api/
+    type: annotation
+    format: json
+    prefix: /api/v1
+
+esky_page_controllers:
+    resource: ../../src/Esky/Application/Controller/Page/
+    type: annotation
+
+kernel:
+    resource: ../../src/App/Kernel.php
+    type: annotation

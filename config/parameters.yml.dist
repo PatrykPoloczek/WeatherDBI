@@ -1,0 +1,10 @@
+parameters:
+    locale: '%env(APP_LOCALE)%'
+
+    secret: '%env(APP_SECRET)%'
+
+    api.title: direction
+    api.description: Direction API
+    api.version: 1.0.0
+
+    weatherdbi.base_url: '%env(WEATHER_DBI_BASE_URL)%'

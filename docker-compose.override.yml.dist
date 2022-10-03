@@ -1,0 +1,45 @@
+version: '3'
+services:
+    cli:
+#        environment:
+#            # Enable it if you want enable XDebug extension
+#            PHP_EXT_XDEBUG: 'True'
+#            XDEBUG_CONFIG: idekey=direction remote_host=172.17.0.1
+#            PHP_IDE_CONFIG: serverName=direction.eskyservices.pl.local
+#            # Enable it to colorize terminal output
+#            TERM: xterm-color
+#        # Enable it to forward container ports to your host interfaces
+#        ports:
+#            - '2222:22'
+#        volumes:
+#            # Uncomment to bind your home dir to container home dir
+#            - ${HOME}:/home/vagrant/
+    app:
+#        environment:
+#            # Enable it if you want enable XDebug extension
+#            PHP_EXT_XDEBUG: 'True'
+#            XDEBUG_CONFIG: idekey=direction remote_host=172.17.0.1
+#            PHP_IDE_CONFIG: serverName=direction.eskyservices.pl.local
+#            # Enable it to colorize terminal output
+#            TERM: xterm-color
+#        # Enable it to forward container ports to your host interfaces
+        ports:
+            - '80:8080'
+    mountebank:
+        ports:
+            - '8080:8080'
+
+
+networks:
+    # Default network configuration for this services stack (adjust for your own needs)
+    # list of registered networks: https://docs.google.com/spreadsheets/d/1n-mge9JqDwQC4bfsE1lHGRHviMIuWhaWnoNxfea7hwU
+    default:
+        ipam:
+            config:
+                - subnet: 172.33.100.0/24
+        driver_opts:
+            # Default IP when binding above container ports (use it at your /etc/hosts)
+            # NOTE: On Linux there is the same IP address as on `networks.default.ipam.config.0.gateway`
+            # On OSX first You must add an alias for `lo0` interface, i.e. `sudo ifconfig lo0 alias 172.21.99.1`
+            # See https://goo.gl/MoJqcA how to add this alias on startup.
+            com.docker.network.bridge.host_binding_ipv4: 172.33.100.1

@@ -1,0 +1,19 @@
+{
+  "bridge": "HttpKernel",
+  "port": 8080,
+  "workers": 1,
+  "app-env": "dev",
+  "debug": true,
+  "logging": true,
+  "static": true,
+  "static-directory": "public/",
+  "bootstrap": "Symfony",
+  "max-requests": 1000,
+  "populate-server-var": true,
+  "concurrent-requests": true,
+  "ttl": 0,
+  "reload-timeout": 30,
+  "max-execution-time": -1,
+  "memory-limit": -1,
+  "request-body-buffer": 65000
+}

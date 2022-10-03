@@ -1,0 +1,42 @@
+version: '3'
+services:
+    cli:
+        image: europe-docker.pkg.dev/esky-common/esky-images/dbr/php74-cli:latest
+        env_file:
+            - docker-compose.env
+        environment:
+            SSH_AUTH_SOCK: /tmp/ssh-agent.sock
+        volumes:
+            - ./:/var/www/esky/direction/
+            - ${SSH_AUTH_SOCK}:/tmp/ssh-agent.sock
+        working_dir: /var/www/esky/direction/
+        hostname: cli
+        depends_on:
+            - app
+    app:
+        image: europe-docker.pkg.dev/esky-common/esky-images/dbr/php74-pm:latest
+        expose:
+            - 8080
+        env_file:
+            - docker-compose.env
+        command: --no-ansi -v -c process.json
+        volumes:
+            - ./:/var/www/esky/direction/
+        working_dir: /var/www/esky/direction/
+        hostname: app
+        networks:
+            default:
+                aliases:
+                    - direction.eskyservices.pl.local
+    mountebank:
+        image: europe-docker.pkg.dev/esky-common/esky-images/esky/mountebank:latest
+        expose:
+            - 2525
+            - 2526
+            - 8080
+        hostname: mountebank
+        volumes:
+            - ./tests/fixtures/mountebank/:/mountebank/
+        command: >
+            --configfile=/mountebank/imposters.json.ejs
+            --allowInjection

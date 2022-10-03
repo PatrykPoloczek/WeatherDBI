@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Esky Docker" default="docker:validation:full" basedir="..">
+
+    <property name="docker.compose.timeout" value="60"/>
+    <if>
+        <isset property="env.COMPOSE_FILE"/>
+        <then>
+            <property name="docker.compose.compose-file" value="${env.COMPOSE_FILE}"/>
+        </then>
+        <else>
+            <property name="docker.compose.compose-file" value="docker-compose.yml"/>
+        </else>
+    </if>
+
+    <target name="docker:validation:full" description="Run full validation inside Docker container">
+        <phingcall target="docker:compose:exec">
+            <property name="docker.compose.exec-command">
+                rm -f config/parameters.yml
+                composer install --no-interaction --no-progress --prefer-dist --optimize-autoloader
+                bin/phing \
+                    project:build-tests \
+                    validation:full
+            </property>
+        </phingcall>
+    </target>
+
+    <!-- ################################################################################# -->
+    <!-- DOCKER COMPOSE TASKS -->
+    <!-- ################################################################################# -->
+
+    <target name="docker:compose:start" hidden="true">
+        <exec executable="docker-compose"
+              passthru="true"
+              checkreturn="true"
+              level="info">
+            <arg value="-f"/>
+            <arg value="${docker.compose.compose-file}"/>
+            <arg value="up"/>
+            <arg value="-d"/>
+            <arg value="--force-recreate"/>
+            <arg value="--remove-orphans"/>
+            <arg value="-t"/>
+            <arg value="${docker.compose.timeout}"/>
+        </exec>
+    </target>
+
+    <target name="docker:compose:stop" hidden="true">
+        <exec executable="docker-compose"
+              passthru="true"
+              checkreturn="true"
+              level="info">
+            <arg value="stop"/>
+            <arg value="-t"/>
+            <arg value="${docker.compose.timeout}"/>
+        </exec>
+
+        <phingcall target="docker:compose:dump-logs"/>
+    </target>
+
+    <target name="docker:compose:down" hidden="true">
+        <exec executable="docker-compose"
+              passthru="true"
+              checkreturn="true"
+              level="info">
+            <arg value="down"/>
+        </exec>
+    </target>
+
+    <target name="docker:compose:pull" hidden="true">
+        <exec executable="docker-compose"
+              passthru="true"
+              checkreturn="true"
+              level="info">
+            <arg value="-f"/>
+            <arg value="${docker.compose.compose-file}"/>
+            <arg value="pull"/>
+        </exec>
+    </target>
+
+    <target name="docker:compose:dump-logs" hidden="true">
+        <exec executable="docker-compose"
+              output="${dir:logs}/docker-compose.log"
+              passthru="true"
+              checkreturn="false"
+              level="info">
+            <arg value="-f"/>
+            <arg value="${docker.compose.compose-file}"/>
+            <arg value="logs"/>
+            <arg value="--no-color"/>
+            <arg value="--tail=all"/>
+            <arg value="--timestamps"/>
+        </exec>
+    </target>
+
+    <target name="docker:compose:exec" hidden="true">
+        <property name="docker.compose.exec-command" value="" override="true"/>
+
+        <exec executable="docker-compose"
+              passthru="true"
+              checkreturn="true"
+              level="info">
+            <arg value="exec"/>
+            <arg value="-T"/>
+            <arg value="cli"/>
+            <arg value="bash"/>
+            <arg value="-c"/>
+            <arg value="${docker.compose.exec-command}"/>
+        </exec>
+    </target>
+
+    <target name="docker:build:tests" description="Run complete tests build">
+        <trycatch property="exception">
+            <try>
+                <phingcall target="docker:compose:start"/>
+                <phingcall target="docker:validation:full">
+                    <property name="env" value="test"/>
+                </phingcall>
+            </try>
+            <catch>
+                <fail>Exception: ${exception}</fail>
+            </catch>
+            <finally>
+                <phingcall target="docker:compose:stop">
+                    <property name="docker.compose.timeout" value="180"/>
+                </phingcall>
+                <phingcall target="docker:compose:down">
+                    <property name="docker.compose.timeout" value="180"/>
+                </phingcall>
+            </finally>
+        </trycatch>
+    </target>
+</project>

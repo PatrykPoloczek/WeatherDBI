@@ -1,0 +1,9 @@
+suites:
+    esky_application:
+        namespace: Esky\Application
+    esky_bundle:
+        namespace: Esky\Bundle
+    esky_component:
+        namespace: Esky\Component
+    esky_infrastructure:
+        namespace: Esky\Infrastructure

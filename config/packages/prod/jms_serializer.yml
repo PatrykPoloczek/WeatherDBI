@@ -1,0 +1,7 @@
+# Read the documentation: https://jmsyst.com/bundles/JMSSerializerBundle
+jms_serializer:
+    visitors:
+        json_serialization:
+            options:
+                - JSON_UNESCAPED_SLASHES
+                - JSON_PRESERVE_ZERO_FRACTION

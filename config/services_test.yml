@@ -1,0 +1,11 @@
+services:
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: true        # Automatically sets services as public.
+
+    Symfony\Bridge\Monolog\Handler\ConsoleHandler:
+        alias: monolog.handler.console
+
+    Esky\Infrastructure\WeatherDBI\Repository\WeatherRepositoryInterface:
+        alias: Esky\Infrastructure\WeatherDBI\Repository\FakeWeatherRepository

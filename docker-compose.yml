@@ -1,0 +1,42 @@
+version: '3'
+services:
+    cli:
+        image: lavoweb/php-7.4:composer
+        env_file:
+            - docker-compose.env
+        environment:
+            SSH_AUTH_SOCK: /tmp/ssh-agent.sock
+        volumes:
+            - ./:/var/www/esky/direction/
+            - ${SSH_AUTH_SOCK}:/tmp/ssh-agent.sock
+        working_dir: /var/www/esky/direction/
+        hostname: cli
+        depends_on:
+            - app
+    app:
+        image: nevrending/phppm:2.2.2-php7.4-ppm
+        expose:
+            - 8080
+        env_file:
+            - docker-compose.env
+        command: start --host=0.0.0.0 --socket-path=/var/run/phppm/run --pidfile=/var/run/phppm/ppm.pid --cgi-path=/usr/bin/php --no-ansi -v -c process.json
+        volumes:
+            - ./:/var/www/esky/direction/
+        working_dir: /var/www/esky/direction/
+        hostname: app
+        networks:
+            default:
+                aliases:
+                    - direction.eskyservices.pl.local
+    mountebank:
+        image: jkris/mountebank:latest
+        expose:
+            - 2525
+            - 2526
+            - 8080
+        hostname: mountebank
+        volumes:
+            - ./tests/fixtures/mountebank/:/mountebank/
+        command: >
+            --configfile=/mountebank/imposters.json.ejs
+            --allowInjection

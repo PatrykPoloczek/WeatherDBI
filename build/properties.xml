@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Esky Properties" basedir="..">
+
+    <property name="type" value="webservice" override="true"/>
+    <property name="name" value="direction" override="true"/>
+    <property name="version" value="b0" override="true"/>
+
+    <property name="dir:root" value="${project.basedir}"/>
+    <property name="dir:build" value="${dir:root}/build"/>
+    <property name="dir:dist" value="${dir:build}/distributions"/>
+    <property name="dir:cache" value="${dir:root}/var/cache"/>
+    <property name="dir:logs" value="${dir:root}/var/logs"/>
+
+    <property name="file.distribution.tgz" value="${dir:dist}/${name}-${version}.tgz"/>
+    <!-- Environment specific parameters, like `/usr/local/etc/dbr/parameters.yml` at our CI Servers -->
+    <property name="file.parameters.env" value=""/>
+    <property name="file.env.project" value="${dir:root}/.env"/>
+    <property name="file.parameters.build" value="${dir:root}/config/build_parameters.yml"/>
+    <property name="file.parameters.project" value="${dir:root}/config/parameters.yml"/>
+    <property name="file.parameters.dist" value="${dir:root}/config/parameters.yml.dist"/>
+
+    <if>
+        <not>
+            <isset property="env"/>
+        </not>
+        <then>
+            <property name="env" value="dev"/>
+        </then>
+    </if>
+
+    <property name="command:console" value="${dir:root}/bin/console --env=${env}"/>
+    <property name="command:openapi" value="${dir:root}/bin/openapi"/>
+
+</project>

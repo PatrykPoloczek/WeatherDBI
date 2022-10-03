@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="direction" description="direction project" default="welcome" basedir=".">
+
+    <import file="build/validations.xml" />
+    <import file="build/docker.xml" />
+    <import file="build/properties.xml" />
+
+    <includepath classpath="build/tasks" />
+    <import file="build/tasks.xml" />
+
+    <!-- White list of distribution files -->
+    <fileset dir="${dir:root}" id="distribution_files">
+        <include name="app/"/>
+        <include name="bin/"/>
+        <include name="build/tasks/"/>
+        <include name="build/*.xml"/>
+        <include name="config/"/>
+        <exclude name="config/parameters.yml"/>
+        <include name="public/"/>
+        <include name="src/"/>
+        <include name="templates/"/>
+        <include name="var/*/.gitkeep"/>
+        <include name="vendor/"/>
+        <include name="build.xml"/>
+        <include name="composer.json"/>
+        <include name="composer.lock"/>
+        <include name="symfony.lock"/>
+        <include name="docker-*"/>
+        <exclude name="docker-compose.yml"/>
+        <include name="install.sh"/>
+        <include name=".env"/>
+        <include name="process.json"/>
+        <include name="process-prod.json"/>
+    </fileset>
+
+    <!-- ################################################################################# -->
+    <!-- MAIN TARGETS -->
+    <!-- ################################################################################# -->
+
+    <target name="welcome" description="Say hi ;)" hidden="true">
+        <echo msg="Welcome in the direction local build system!"/>
+        <echo msg="Run: phing -list"/>
+        <echo msg="to get all available tasks"/>
+    </target>
+
+    <target name="project:build"
+            description="Build project and install dependencies - staging/production environment"
+            depends="
+            project:config:copy-env,
+            project:dump-build-parameters,
+            composer:install,
+            project:cache:warmup
+    ">
+        <echo msg="Success: Project rebuilt clean."/>
+    </target>
+
+    <target name="project:build-dist"
+            description="Compose Project distribution archive"
+            depends="
+            project:dump-build-parameters,
+            composer:install
+    ">
+        <delete file="${file.distribution.tgz}"/>
+        <mkdir dir="${dir:dist}"/>
+        <tar destfile="${file.distribution.tgz}" compression="gzip">
+            <fileset refid="distribution_files" />
+        </tar>
+    </target>
+
+    <target name="project:install" description="Compose Project distribution archive">
+        <phingcall target="project:config:copy-env"/>
+        <phingcall target="composer:post-install"/>
+        <phingcall target="project:cache:warmup"/>
+    </target>
+
+    <target name="project:build-local"
+            description="Build project and install dependencies - local environment"
+            depends="
+            composer:install-dev,
+            project:cache:warmup
+    ">
+        <echo msg="Success: Project rebuilt clean."/>
+    </target>
+
+    <target name="project:build-tests"
+            description="Build project and install dependencies - tests environment" hidden="true"
+            depends="
+            project:env:clean,
+            project:config:clean,
+            composer:install-tests,
+            remove:cache,
+            remove:logs
+    ">
+        <echo msg="Success: Project rebuilt clean."/>
+    </target>
+
+    <!-- ################################################################################# -->
+    <!-- COMPOSER TARGETS -->
+    <!-- ################################################################################# -->
+
+    <target name="composer:install" description="Download dependencies - dev.*/staging/production environment">
+        <exec executable="composer" passthru="true" dir="${dir:root}" checkreturn="true" level="info">
+            <arg line="install"/>
+            <arg line="--ansi"/>
+            <arg line="--no-dev"/>
+            <arg line="--no-progress"/>
+            <arg line="--no-interaction"/>
+            <arg line="--prefer-dist"/>
+            <arg line="--optimize-autoloader"/>
+        </exec>
+        <echo msg="Success: Composer dependencies ready."/>
+    </target>
+
+    <target name="composer:post-install" description="run composer post-install-cmd">
+        <exec executable="composer" passthru="true" dir="${dir:root}" checkreturn="true" level="info">
+            <arg line="run-script" />
+            <arg line="--ansi"/>
+            <arg line="--no-interaction" />
+            <arg line="post-install-cmd" />
+        </exec>
+        <echo msg="Composer post-install-cmd scripts finished!"/>
+    </target>
+
+    <target name="composer:install-dev" description="Download dependencies - dev environment">
+        <exec executable="composer" passthru="true" dir="${dir:root}" checkreturn="true" level="info">
+            <arg line="install"/>
+            <arg line="--ansi"/>
+            <arg line="--prefer-dist"/>
+            <arg line="--optimize-autoloader"/>
+            <arg line="--no-progress"/>
+            <arg line="--profile"/>
+        </exec>
+        <echo msg="Success: Composer dependencies ready."/>
+    </target>
+
+    <target name="composer:install-tests" description="Download dependencies - tests environment">
+        <exec executable="composer" passthru="true" dir="${dir:root}" checkreturn="true" level="info">
+            <arg line="install"/>
+            <arg line="--prefer-dist"/>
+            <arg line="--optimize-autoloader"/>
+            <arg line="--no-interaction"/>
+            <arg line="--no-progress"/>
+        </exec>
+        <echo msg="Success: Composer dependencies ready."/>
+    </target>
+
+    <!-- ################################################################################# -->
+    <!-- PROJECT TARGETS -->
+    <!-- ################################################################################# -->
+
+    <target name="project:env:clean" description="Remove symfony2 env on tests environment" hidden="true">
+        <delete file="${file.env.project}" failonerror="false" quiet="false"/>
+    </target>
+
+    <target name="project:config:clean" description="Remove symfony2 config on tests environment" hidden="true">
+        <delete file="${file.parameters.project}" failonerror="false" quiet="false"/>
+    </target>
+
+    <target name="project:config:copy-env" description="Recreate symfony2 config on CI environment" hidden="true">
+        <available file="${file.parameters.env}" property="file.parameters.exists"/>
+
+        <if>
+            <istrue value="${file.parameters.env}" />
+            <then>
+                <if>
+                    <isset property="file.parameters.exists" />
+                    <then>
+                        <echo msg="Copying `${file.parameters.env}` to `${file.parameters.project}`"/>
+                        <copy file="${file.parameters.env}"
+                              tofile="${file.parameters.project}"
+                              overwrite="true"/>
+                    </then>
+                    <else>
+                        <echo msg="File `${file.parameters.env}` is specified, but not exists..." level="warning"/>
+                        <echo msg="Omitted copying file `${file.parameters.env}`..."/>
+                    </else>
+                </if>
+            </then>
+        </if>
+    </target>
+
+    <target name="project:dump-build-parameters">
+        <dumpparams file="${file.parameters.build}">
+            <parameter name="app_type" value="${type}" />
+            <parameter name="app_name" value="${name}" />
+            <parameter name="app_version" value="${version}" />
+        </dumpparams>
+    </target>
+
+    <target name="openapi:generate" description="Generate swagger documentation">
+        <exec command="${command:openapi} --bootstrap config/bootstrap.php --output config/swagger.yml --format yaml src" checkreturn="true" passthru="true" />
+    </target>
+
+    <target name="project:cache:warmup" description="Symfony2 prepare">
+        <phingcall target="remove:cache" />
+        <exec command="${command:console} cache:warmup --no-debug" checkreturn="true" passthru="true"/>
+    </target>
+
+    <!-- ################################################################################# -->
+    <!-- CLEAN TARGETS -->
+    <!-- ################################################################################# -->
+
+    <target name="remove:cache" description="Clean cache directory">
+        <delete includeemptydirs="true">
+            <fileset dir="${dir:cache}" defaultexcludes="true">
+                <exclude name=".gitkeep"/>
+            </fileset>
+        </delete>
+        <echo msg="Success: Directory ${dir:cache} is clean."/>
+    </target>
+
+    <target name="remove:logs" description="Clean logs directory">
+        <delete includeemptydirs="true">
+            <fileset dir="${dir:logs}" defaultexcludes="true">
+                <exclude name=".gitkeep"/>
+            </fileset>
+        </delete>
+        <echo msg="Success: Directory ${dir:logs} is clean."/>
+    </target>
+</project>

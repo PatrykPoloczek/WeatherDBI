@@ -1,0 +1,4 @@
+# Read the documentation: https://symfony.com/doc/current/cache.html
+framework:
+    cache:
+

@@ -1,0 +1,32 @@
+# Read the documentation: https://symfony.com/doc/current/logging.html
+monolog:
+    channels: []
+    handlers:
+        graylog_ws:
+            type: gelf
+            publisher:
+                id: esky_tracking.monolog_publisher.graylog_publisher
+            level: debug
+            formatter: esky_tracking.monolog_formatter.graylog
+            bubble: false
+        main:
+            type: group
+            members:
+                - stream
+                - console
+                - graylog
+        stream:
+            type: stream
+            path: '%kernel.logs_dir%/%kernel.name%_%kernel.environment%.log'
+            level: warning
+        console:
+            type: stream
+            path: php://stderr
+            level: warning
+            formatter: monolog.formatter.json
+        graylog:
+            type: gelf
+            publisher:
+                id: esky_tracking.monolog_publisher.graylog_publisher
+            level: warning
+            formatter: esky_tracking.monolog_formatter.graylog

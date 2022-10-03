@@ -1,0 +1,32 @@
+# Read the documentation: https://symfony.com/doc/current/logging.html
+monolog:
+    channels: []
+    handlers:
+        main:
+            type: group
+            members:
+                - stream
+                - error_stream
+                - deprecation
+                - console
+        stream:
+            type: stream
+            path: '%kernel.logs_dir%/%kernel.name%_%kernel.environment%.log'
+            level: debug
+        error_stream:
+            type: stream
+            path: '%kernel.logs_dir%/%kernel.name%_%kernel.environment%_error.log'
+            level: warning
+        deprecation:
+            type: stream
+            path: '%kernel.logs_dir%/%kernel.name%_%kernel.environment%.deprecations.log'
+        console:
+            type: console
+            level: critical
+            verbosity_levels:
+                VERBOSITY_QUIET: CRITICAL
+                VERBOSITY_NORMAL: CRITICAL
+                VERBOSITY_VERBOSE: CRITICAL
+                VERBOSITY_VERY_VERBOSE: CRITICAL
+                VERBOSITY_DEBUG: CRITICAL
+            channels: [console]

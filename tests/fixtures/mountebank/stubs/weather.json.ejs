@@ -1,0 +1,42 @@
+{
+    "predicates": [
+        {
+            "equals": {
+                "method": "GET",
+                "path": "/data/weather/Cairo"
+            }
+        }
+    ],
+    "responses": [
+        {
+            "is": {
+                "statusCode": 200,
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "body": <% include ../response/cairo.json %>
+            }
+        }
+    ]
+},
+{
+    "predicates": [
+        {
+            "equals": {
+                "method": "GET",
+                "path": "/data/weather/London"
+            }
+        }
+    ],
+    "responses": [
+        {
+            "is": {
+                "statusCode": 200,
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "body": <% include ../response/london.json %>
+            }
+        }
+    ]
+}

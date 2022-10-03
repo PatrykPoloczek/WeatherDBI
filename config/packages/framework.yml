@@ -1,0 +1,21 @@
+framework:
+    secret: '%secret%'
+
+    csrf_protection: false
+
+    trusted_hosts: ~
+
+    session:
+        enabled: false
+        handler_id: ~
+        name: 'app-sid'
+        cookie_httponly: true
+        cookie_secure: true
+        cookie_samesite: lax
+
+    fragments: ~
+    esi: false
+    http_method_override: true
+
+    php_errors:
+        log: true

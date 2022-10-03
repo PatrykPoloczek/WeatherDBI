@@ -1,0 +1,9 @@
+app.swagger:
+    path: /doc.json
+    methods: [GET]
+    controller: nelmio_api_doc.controller.swagger
+
+app.swagger_ui:
+    path: /doc
+    methods: [GET]
+    controller: Esky\Application\Controller\Page\DocumentationController::indexAction

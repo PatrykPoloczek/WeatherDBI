@@ -1,0 +1,5 @@
+# Read the documentation: https://symfony.com/doc/current/routing.html
+framework:
+    router:
+        strict_requirements: ~
+        utf8: true

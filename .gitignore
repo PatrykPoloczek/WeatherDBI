@@ -1,0 +1,80 @@
+.idea
+!.gitkeep
+/build/distributions/
+/vendor/
+/var/*
+/bin/*
+!bin/console
+
+/config/parameters.yml
+/config/build_parameters.yml
+/config/swagger.yml
+
+docker-compose.override.yml
+
+.env
+
+###> symfony/framework-bundle ###
+/public/bundles/
+/.env.local
+/.env.local.php
+/.env.*.local
+###< symfony/framework-bundle ###
+
+###> behat/symfony2-extension ###
+behat.yml
+###< behat/symfony2-extension ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
+
+### *** required entries below ***
+###
+### Please do not add anything below this line, your changes will be overwritten
+###
+*.iws
+*.launch
+.externalToolBuilders/
+.DS_Store
+.DS.d74cb6fe
+__MACOSX/
+.idea/
+.nb-gradle/
+.project
+.settings/
+.history/
+atlassian-ide-plugin.xml
+nbactions.xml
+nbbuild/
+nbdist/
+nbproject/private/
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/48c36
+!.vscode/extensions.json
+*.code-workspace
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+.ionide
+vendor/
+build/logs/
+*.log
+
+
+
+
+###
+###                                                                                                                                                                                                                                  git#298038
+###
